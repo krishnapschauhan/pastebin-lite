@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Paste</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+      padding: 40px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    pre {
+      background: #0f172a;
+      padding: 20px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .meta {
+      margin-top: 16px;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .error {
+      color: #f87171;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Paste</h1>
+    <pre id="content">Loading...</pre>
+    <div class="meta" id="meta"></div>
+  </div>
+
+  <script>
+    const contentEl = document.getElementById("content");
+    const metaEl = document.getElementById("meta");
+
+    const pasteId = window.location.pathname.split("/").pop();
+
+    fetch(`/api/pastes/${pasteId}`)
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error("Paste not found or expired");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        contentEl.textContent = data.content;
+
+        const metaParts = [];
+
+        if (data.remaining_views !== null) {
+          metaParts.push(`Remaining views: ${data.remaining_views}`);
+        } else {
+          metaParts.push("Unlimited views");
+        }
+
+        if (data.expires_at) {
+          metaParts.push(
+            `Expires at: ${new Date(data.expires_at).toLocaleString()}`
+          );
+        } else {
+          metaParts.push("No expiry");
+        }
+
+        metaEl.textContent = metaParts.join(" • ");
+      })
+      .catch(() => {
+        contentEl.innerHTML =
+          '<span class="error">Paste not found or expired.</span>';
+        metaEl.textContent = "";
+      });
+  </script>
+</body>
+</html>

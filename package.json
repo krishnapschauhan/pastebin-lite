@@ -1,0 +1,19 @@
+{
+  "name": "pastebin-lite",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "nanoid": "^5.1.6"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0",
+    "nodemon": "^3.1.11"
+  }
+}

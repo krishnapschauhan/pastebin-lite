@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Paste</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    textarea, input {
+      width: 100%;
+      background: #0f172a;
+      color: white;
+      border: 1px solid #1e293b;
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+
+    textarea {
+      min-height: 200px;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px;
+      background: #38bdf8;
+      color: black;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 20px;
+      background: #020617;
+      padding: 12px;
+      border-radius: 6px;
+      display: none;
+    }
+
+    .error {
+      color: #f87171;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Create a Paste</h1>
+
+    <textarea id="content" placeholder="Write your text here..."></textarea>
+
+    <input id="ttl" type="number" placeholder="TTL in seconds (optional)" />
+    <input id="views" type="number" placeholder="Max views (optional)" />
+
+    <button onclick="createPaste()">Create Paste</button>
+
+    <div class="error" id="error"></div>
+
+    <div class="result" id="result">
+      <p>Share this URL:</p>
+      <input id="url" readonly />
+      <button onclick="copyUrl()">Copy</button>
+    </div>
+  </div>
+
+  <script>
+    async function createPaste() {
+      const content = document.getElementById("content").value.trim();
+      const ttl = document.getElementById("ttl").value;
+      const views = document.getElementById("views").value;
+
+      const errorEl = document.getElementById("error");
+      const resultEl = document.getElementById("result");
+
+      errorEl.textContent = "";
+      resultEl.style.display = "none";
+
+      if (!content) {
+        errorEl.textContent = "Content cannot be empty";
+        return;
+      }
+
+      const payload = { content };
+
+      if (ttl) payload.ttl_seconds = Number(ttl);
+      if (views) payload.max_views = Number(views);
+
+      try {
+        const res = await fetch("/api/pastes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          errorEl.textContent = data.error || "Something went wrong";
+          return;
+        }
+
+        document.getElementById("url").value = data.url;
+        resultEl.style.display = "block";
+      } catch {
+        errorEl.textContent = "Network error";
+      }
+    }
+
+    function copyUrl() {
+      const urlInput = document.getElementById("url");
+      urlInput.select();
+      document.execCommand("copy");
+      alert("URL copied!");
+    }
+  </script>
+</body>
+</html>

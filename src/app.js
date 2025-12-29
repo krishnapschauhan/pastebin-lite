@@ -29,27 +29,20 @@ app.use("/api/pastes", pastesRouter);
    FRONTEND ROUTES
    ====================== */
 
-// Create new paste page (STATIC FIRST)
 app.get("/new", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "new.html"));
 });
 
-// View paste page (DYNAMIC AFTER)
 app.get("/p/:id", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "paste.html"));
 });
 
-// Root
 app.get("/", (req, res) => {
   res.json({ message: "Pastebin Lite API" });
 });
 
 /* ======================
-   SERVER
+   EXPORT FOR VERCEL
    ====================== */
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+export default app;

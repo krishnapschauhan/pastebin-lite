@@ -5,9 +5,7 @@ import { nanoid } from "nanoid";
 
 const router = Router();
 
-/* ======================
-   CREATE PASTE
-   ====================== */
+//CREATE PASTE
 router.post("/", async (req, res) => {
   const { content, ttl_seconds, max_views } = req.body;
 
@@ -60,9 +58,7 @@ router.post("/", async (req, res) => {
   });
 });
 
-/* ======================
-   FETCH PASTE — FINAL, CORRECT
-   ====================== */
+//FETCH PASTE — FINAL, CORRECT
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -78,7 +74,7 @@ router.get("/:id", async (req, res) => {
     return res.status(404).json({ error: "Paste not found" });
   }
 
-  // ❗ ALLOW FIRST VIEW ALWAYS
+  //ALLOW FIRST VIEW ALWAYS
   if (paste.remainingViews !== null && paste.remainingViews <= 0) {
     return res.status(404).json({ error: "Paste not found" });
   }
@@ -91,7 +87,7 @@ router.get("/:id", async (req, res) => {
     expires_at: paste.expiresAt,
   });
 
-  // ⬇️ DECREMENT AFTER RESPONSE
+  // DECREMENT AFTER RESPONSE
   if (paste.remainingViews !== null) {
     await prisma.paste.update({
       where: { id },

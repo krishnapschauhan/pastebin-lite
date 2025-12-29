@@ -9,15 +9,11 @@ dotenv.config();
 
 const app = express();
 
-// ESM __dirname fix
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(express.json());
-
-/* ======================
-   API ROUTES
-   ====================== */
 
 app.get("/api/healthz", (req, res) => {
   res.status(200).json({ ok: true });
@@ -25,9 +21,6 @@ app.get("/api/healthz", (req, res) => {
 
 app.use("/api/pastes", pastesRouter);
 
-/* ======================
-   FRONTEND ROUTES
-   ====================== */
 
 app.get("/new", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "new.html"));
@@ -40,9 +33,5 @@ app.get("/p/:id", (req, res) => {
 app.get("/", (req, res) => {
   res.json({ message: "Pastebin Lite API" });
 });
-
-/* ======================
-   EXPORT FOR VERCEL
-   ====================== */
 
 export default app;

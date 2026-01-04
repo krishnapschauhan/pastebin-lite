@@ -89,5 +89,5 @@ No in-memory or global state is used, making the app compatible with serverless 
 
 ## Project status
 
-The application is fully implemented, deployed, and meets all requirements specified in the take-home assignment.
+The application is fully implemented, deployed, and meets all requirements.
 
